@@ -1,0 +1,16 @@
+# Provenance-tracked inputs for Alzheimer's and Crohn's
+AD:
+  - id: "Bellenguez_2022"
+    doi: "10.1038/s41588-022-01024-z"
+    # Example URL (usually from GWAS Catalog or supplementary data)
+    url: "https://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/GCST90027001-GCST90028000/GCST90027158/GCST90027158_buildGRCh38.tsv.gz"
+    # MD5 checksum ensures we are using the exact same file every time
+    md5: "e4b3c..." 
+    notes: "Stage 1 meta-analysis of Alzheimer's disease"
+
+CD:
+  - id: "DeLange_2017"
+    doi: "10.1038/ng.3760"
+    url: "https://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/GCST004001-GCST005000/GCST004132/harmonised/28067908-GCST004132-EFO_0000384.h.tsv.gz"
+    md5: "a1b2c..."
+    notes: "Crohn's disease meta-analysis"

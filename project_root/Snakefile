@@ -1,0 +1,14 @@
+configfile: "config/config.yaml"
+
+rule all:
+    input:
+        "results/reports/run_config.txt"
+rule dump_config:
+    output:
+        "results/reports/run_config.txt"
+    run:
+        import yaml
+        with open(output, 'w') as f:
+            f.write("Pipeline Run Configuration\n")
+            f.write("==========================\n\n")
+            yaml.dump(config, f)

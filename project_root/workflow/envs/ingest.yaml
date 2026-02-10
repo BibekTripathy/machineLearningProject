@@ -1,0 +1,12 @@
+name: gwas_ingest
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.11
+  - pandas>=2.0.0
+  - requests>=2.31.0
+  - pyyaml>=6.0
+  - openpyxl           # For reading Excel supplements
+  - mygene             # For converting gene symbols to Ensembl IDs

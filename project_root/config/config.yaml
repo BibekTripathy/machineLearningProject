@@ -1,0 +1,20 @@
+project:
+  name: "AD_CD_Module_Discovery"
+  organism_taxid: "9606" # Homo sapiens
+  build: "GRCh38"
+
+ingestion:
+  # Minimum Locus-to-Gene (L2G) score to accept a gene as a "seed"
+  l2g_threshold: 0.5
+  gene_id_format: "ensembl_gene_id" 
+
+network:
+  string_version: "v12.0"
+  min_interaction_score: 0.7
+  propagation_method: "rwr" # Options: rwr, diamond
+  restart_probability: 0.5
+
+paths:
+  root: "."
+  resources: "resources/"
+  results: "results/"
