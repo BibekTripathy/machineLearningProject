@@ -1,14 +1,59 @@
 configfile: "config/config.yaml"
 
 rule all:
+    input:"results/reports/summary.html"
+
+rule fetch_string:
+    input: "resources/raw/gene_list.tsv"
+    output: "results/networks/string_bg.tsv"
+    conda: "workflow/envs/ingest.yaml"
+    script: "workflow/scripts/fetch_string.py"
+
+rule run_rwr:
+    input: 
+        seeds="resources/raw/gene_list.tsv",
+        net="results/networks/string_bg.tsv"
+    output: 
+        expanded="results/genes/expanded_genes.tsv"
+    params:
+        restart_prob=config["propagation"]["rwr"]["restart_prob"],
+        top_k=config["propagation"]["rwr"]["top_k"]
+    script: "workflow/scripts/rwr.py"
+
+# 3. Phase 2D: Community Detection [cite: 285]
+rule cluster_leiden:
+    input: 
+        net="results/networks/string_bg.tsv",
+        expanded="results/genes/expanded_genes.tsv"
+    output: "results/modules/final_modules.tsv"
+    script: "workflow/scripts/cluster_graph.py"
+
+# 4. Phase 3: Disease-Specific PPI Retrieval [cite: 43, 119, 280]
+rule psicquic_query:
     input:
-        "results/reports/run_config.txt"
-rule dump_config:
+        seeds="resources/raw/gene_list.tsv"
     output:
-        "results/reports/run_config.txt"
-    run:
-        import yaml
-        with open(output, 'w') as f:
-            f.write("Pipeline Run Configuration\n")
-            f.write("==========================\n\n")
-            yaml.dump(config, f)
+        net="results/networks/disease_specific_ppi.tsv"
+    conda: "workflow/envs/ingest.yaml"
+    script: "workflow/scripts/psicquic_query.py"
+
+# 5. Phase 4: Compare and Enrich [cite: 58, 288]
+rule run_gprofiler:
+    input:
+        modules="results/modules/final_modules.tsv",
+        background="results/networks/string_bg.tsv"
+    output:
+        out="results/enrichment/enrich_cancer_leiden.tsv"
+    conda: "workflow/envs/enrichment.yaml"
+    script: "workflow/scripts/run_gprofiler.py"
+
+# 6. Final Deliverable: Summary Report [cite: 290]
+rule make_report:
+    input:
+        bg_mod="results/modules/final_modules.tsv",
+        dis_net="results/networks/disease_specific_ppi.tsv",
+        enrich="results/enrichment/enrich_cancer_leiden.tsv"
+    output:
+        html="results/reports/summary.html"
+    conda: "workflow/envs/base.yaml"
+    script: "workflow/scripts/make_report.py"

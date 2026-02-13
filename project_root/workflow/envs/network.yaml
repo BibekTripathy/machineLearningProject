@@ -1,0 +1,10 @@
+name: proj-network
+channels: [conda-forge, bioconda]
+dependencies:
+  - python=3.11
+  - pandas
+  - scipy
+  - networkx
+  - igraph
+  - leidenalg
+  - pip
