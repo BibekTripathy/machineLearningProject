@@ -4,3 +4,4 @@ dependencies:
   - python=3.11
   - pandas
   - jinja2
+  - scikit-learn

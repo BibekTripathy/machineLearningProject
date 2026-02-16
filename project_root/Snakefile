@@ -26,6 +26,7 @@ rule cluster_leiden:
         net="results/networks/string_bg.tsv",
         expanded="results/genes/expanded_genes.tsv"
     output: "results/modules/final_modules.tsv"
+    conda: "workflow/envs/network.yaml"
     script: "workflow/scripts/cluster_graph.py"
 
 # 4. Phase 3: Disease-Specific PPI Retrieval [cite: 43, 119, 280]
@@ -38,6 +39,22 @@ rule psicquic_query:
     script: "workflow/scripts/psicquic_query.py"
 
 # 5. Phase 4: Compare and Enrich [cite: 58, 288]
+rule cluster_disease_leiden:
+    input:
+        net="results/networks/disease_specific_ppi.tsv"
+    output: "results/modules/disease_modules.tsv"
+    conda: "workflow/envs/network.yaml"
+    script: "workflow/scripts/cluster_graph.py"
+
+rule compare_modules:
+    input:
+        bg_mod="results/modules/final_modules.tsv",
+        dis_mod="results/modules/disease_modules.tsv"
+    output:
+        metrics="results/reports/comparison_metrics.tsv"
+    conda: "workflow/envs/base.yaml"
+    script: "workflow/scripts/compare_modules.py"
+
 rule run_gprofiler:
     input:
         modules="results/modules/final_modules.tsv",
@@ -52,7 +69,8 @@ rule make_report:
     input:
         bg_mod="results/modules/final_modules.tsv",
         dis_net="results/networks/disease_specific_ppi.tsv",
-        enrich="results/enrichment/enrich_cancer_leiden.tsv"
+        enrich="results/enrichment/enrich_cancer_leiden.tsv",
+        comparison="results/reports/comparison_metrics.tsv"
     output:
         html="results/reports/summary.html"
     conda: "workflow/envs/base.yaml"

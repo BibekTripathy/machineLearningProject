@@ -46,16 +46,26 @@ response.raise_for_status()
 # We keep Node A, Node B, and the combined score [cite: 101, 312]
 df = pd.read_csv(io.StringIO(response.text), sep="\t")
 
+# Get version from config
+version = snakemake.config.get("string", {}).get("version_tag", "v12.0")
+
 # Handle empty responses
 if df.empty:
     print("Warning: No interactions found for the given genes at this threshold.")
-    output_df = pd.DataFrame(columns=["nodeA", "nodeB", "weight"])
+    output_df = pd.DataFrame(columns=["nodeA", "nodeB", "weight", "source", "evidence", "version"])
 else:
     output_df = df[["preferredName_A", "preferredName_B", "score"]].copy()
     output_df.columns = ["nodeA", "nodeB", "weight"]
 
-    # Normalize weights to 0.0 - 1.0 range
-    output_df["weight"] = output_df["weight"] / 1000.0
+    # STRING TSV format returns scores as 0-1000, normalize to 0-1 for consistency
+    # Check if scores are already in 0-1 range (max <= 1.0)
+    if output_df["weight"].max() > 1.0:
+        output_df["weight"] = output_df["weight"] / 1000.0
+
+    # Add metadata columns per framework schema
+    output_df["source"] = "STRING"
+    output_df["evidence"] = "combined_score"
+    output_df["version"] = version
 
     # Remove duplicates and self-loops [cite: 311, 312]
     output_df = output_df[output_df["nodeA"] != output_df["nodeB"]]

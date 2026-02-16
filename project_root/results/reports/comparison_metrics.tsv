@@ -1,0 +1,4 @@
+Metric	Value	Description
+Adjusted Rand Index (ARI)	1.0	Agreement between clustering assignments (0=random, 1=perfect)
+Normalized Mutual Information (NMI)	1.0	Mutual information between clusterings (0=none, 1=perfect)
+Average Jaccard Similarity	0.5	Average overlap of genes across modules

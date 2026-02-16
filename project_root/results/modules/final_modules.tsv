@@ -1,38 +1,38 @@
-gene_symbol	module_id
-CCND1	0
-PIK3CA	1
-SMARCB1	0
-SMARCA4	0
-ARID1A	0
-NRAS	1
-KRAS	1
-EGFR	1
-BRCA2	0
-BRAF	1
-ERBB2	1
-BRCA1	0
-MDM2	0
-TP53	0
-MYC	0
-RB1	0
-CDKN2A	0
-CDK4	0
-IDH2	1
-ATM	0
-IDH1	1
-GNAS	1
-ROS1	1
-STK11	0
-RET	1
-SMAD4	1
-PTPN11	1
-MET	1
-ALK	1
-NF1	1
-TERT	0
-CHEK2	0
-NTRK1	1
-NF2	1
-KMT2D	0
-SETD2	0
-POLE	0
+gene_symbol	module_id	method	disease	module_size	module_density
+ARID1A	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+ATM	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+BRCA1	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+BRCA2	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+CCND1	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+CDK4	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+CDKN2A	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+CHEK2	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+KMT2D	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+MDM2	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+MYC	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+POLE	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+RB1	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+SETD2	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+SMARCA4	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+SMARCB1	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+STK11	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+TERT	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+TP53	leiden_0	leiden	Cancer_Background	19	0.5497076023391813
+ALK	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+BRAF	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+EGFR	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+ERBB2	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+GNAS	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+IDH1	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+IDH2	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+KRAS	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+MET	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+NF1	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+NF2	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+NRAS	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+NTRK1	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+PIK3CA	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+PTPN11	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+RET	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+ROS1	leiden_1	leiden	Cancer_Background	18	0.477124183006536
+SMAD4	leiden_1	leiden	Cancer_Background	18	0.477124183006536
