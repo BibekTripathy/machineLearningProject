@@ -234,3 +234,25 @@ All TSV files follow framework document specifications:
 **Generated:** 2026-02-16  
 **Pipeline Version:** Cancer Network Analysis v1.0  
 **Framework:** Adapted from AD/CD to Cancer per ML project requirements
+
+---
+
+## 💾 Local Database Information
+
+This pipeline utilizes locally downloaded versions of the STRING and IntAct (via PSICQUIC) databases for protein-protein interaction data. Using local copies ensures reproducibility and faster access compared to API calls.
+
+### STRING Database (v12.0, Human)
+*   **Purpose:** Provides a comprehensive network of known and predicted protein-protein interactions used for background network construction and propagation.
+*   **Files Used:**
+    *   `resources/string_db/9606.protein.links.v12.0.txt`
+    *   `resources/string_db/9606.protein.info.v12.0.txt`
+*   **Download Source:** The official STRING database website. Users should navigate to the download section for version 12.0 and filter for Homo sapiens (organism ID 9606).
+    *   [STRING Database Downloads](https://string-db.org/cgi/download?sessionId=bp2oQ4H2BqgW&species_text=Homo+sapiens)
+
+### IntAct Database (Human, PSI-MITAB)
+*   **Purpose:** Provides a curated dataset of molecular interactions, primarily protein-protein interactions, used for generating disease-specific networks. This pipeline processes a local IntAct flatfile instead of relying on external PSICQUIC API calls.
+*   **File Used:**
+    *   `resources/psicquic_db/human.txt`
+*   **Download Source:** The IntAct database can be downloaded from the EBI IntAct downloads page, often in PSI-MITAB format for specific species (e.g., human).
+    *   [EBI IntAct Downloads](https://www.ebi.ac.uk/intact/downloads)
+

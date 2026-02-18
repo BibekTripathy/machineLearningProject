@@ -16,6 +16,15 @@ string:
   include_interactions:
     physical: true
     functional: true
+  local_db:
+    links_path: "resources/string_db/9606.protein.links.v12.0.txt"
+    info_path: "resources/string_db/9606.protein.info.v12.0.txt"
+
+# PSICQUIC/IntAct Database Configuration
+psicquic:
+  local_db:
+    path: "resources/psicquic_db/human.txt"
+  min_score: 0.35                     # Typical threshold for IntAct MiScore
 
 # Network Propagation Configuration [cite: 230, 316, 317]
 propagation:
@@ -63,6 +72,7 @@ paths:
   results_dir: "results"
   genes_dir: "results/genes"
   networks_dir: "results/networks"
+
   modules_dir: "results/modules"
   enrichment_dir: "results/enrichment"
   reports_dir: "results/reports"

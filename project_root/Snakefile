@@ -4,7 +4,10 @@ rule all:
     input:"results/reports/summary.html"
 
 rule fetch_string:
-    input: "resources/raw/gene_list.tsv"
+    input:
+        seeds="resources/raw/gene_list.tsv",
+        links=config["string"]["local_db"]["links_path"],
+        info=config["string"]["local_db"]["info_path"]
     output: "results/networks/string_bg.tsv"
     conda: "workflow/envs/ingest.yaml"
     script: "workflow/scripts/fetch_string.py"
@@ -32,7 +35,8 @@ rule cluster_leiden:
 # 4. Phase 3: Disease-Specific PPI Retrieval [cite: 43, 119, 280]
 rule psicquic_query:
     input:
-        seeds="resources/raw/gene_list.tsv"
+        seeds="resources/raw/gene_list.tsv",
+        db=config["psicquic"]["local_db"]["path"]
     output:
         net="results/networks/disease_specific_ppi.tsv"
     conda: "workflow/envs/ingest.yaml"
