@@ -1,77 +1,77 @@
 import pandas as pd
-import mygene
-import requests
-import io
 import os
 
-# 1. Initialize MyGene and load input
-mg = mygene.MyGeneInfo()
+# 1. Load config and input
+links_path = os.path.join(os.getcwd(), snakemake.config["string"]["local_db"]["links_path"])
+info_path = os.path.join(os.getcwd(), snakemake.config["string"]["local_db"]["info_path"])
+min_score = snakemake.config["string"]["min_combined_score"] * 1000 # STRING file uses 0-1000
 
-# Load seeds (your 40 genes) from the path defined in the Snakefile
 seeds = pd.read_csv(snakemake.input[0], sep="\t")
 symbols = seeds["gene_symbol"].unique().tolist()
 
-# 2. Map Symbols to Ensembl IDs (Standardizing to GRCh38)
-print(f"Mapping {len(symbols)} symbols to Ensembl IDs...")
-mapping = mg.querymany(symbols, scopes="symbol", fields="ensembl.gene", species=9606)
+print(f"Loading local STRING data for {len(symbols)} seed genes...")
 
-# Extract Ensembl IDs, filtering out any genes that didn't map
-ensembl_ids = []
-for item in mapping:
-    if "ensembl" in item:
-        # Some genes might have multiple Ensembl IDs; we take the first one
-        if isinstance(item["ensembl"], list):
-            ensembl_ids.append(item["ensembl"][0]["gene"])
-        else:
-            ensembl_ids.append(item["ensembl"]["gene"])
+# 2. Map Symbols to STRING IDs (using protein.info)
+info_df = pd.read_csv(info_path, sep="\t")
+# The info file has columns: #string_protein_id, preferred_name, protein_size, annotation
+# We map preferred_name (Symbol) to string_protein_id (ENSP)
+mapping_df = info_df[info_df["preferred_name"].isin(symbols)]
+symbol_to_id = dict(zip(mapping_df["preferred_name"], mapping_df["#string_protein_id"]))
+id_to_symbol = dict(zip(mapping_df["#string_protein_id"], mapping_df["preferred_name"]))
 
-if not ensembl_ids:
-    raise ValueError("No genes were successfully mapped to Ensembl IDs.")
+string_ids = list(symbol_to_id.values())
 
-# 3. Fetch STRING interactions using the mapped IDs [cite: 303, 305]
-# Using 'network' endpoint for functional/physical associations [cite: 13, 165]
-url = "https://string-db.org/api/tsv/network"
-params = {
-    "identifiers": "\r".join(ensembl_ids),
-    "species": 9606,  # Homo sapiens [cite: 229]
-    "required_score": 700,  # 0.7 threshold scaled to 1000 [cite: 230]
-    "caller_identity": "cancer_stratification_pipeline",
-}
+if not string_ids:
+    raise ValueError("None of the seed genes could be mapped to STRING IDs in the local info file.")
 
-print(f"Fetching STRING interactions for {len(ensembl_ids)} mapped IDs...")
-response = requests.post(url, data=params)
-response.raise_for_status()
+print(f"Mapped {len(string_ids)} symbols to STRING IDs.")
 
-# 4. Process and Format [cite: 310]
-# We keep Node A, Node B, and the combined score [cite: 101, 312]
-df = pd.read_csv(io.StringIO(response.text), sep="\t")
+# 3. Filter STRING links
+# The links file can be very large, so we use chunking or efficient filtering if possible
+# Since we only care about interactions where BOTH nodes are in our set (or at least one?)
+# Usually, for a background network, we might want all interactions involving our seeds.
+# For this pipeline, we'll fetch interactions where AT LEAST ONE node is a seed, 
+# and the other is also in our seed list (or expanded list? No, Phase 2A is the backbone).
+# Actually, the original API call fetched the network for those identifiers.
+# Let's filter for interactions where both protein1 and protein2 are in our seed list
+# to replicate the "network" behavior for the initial backbone.
 
-# Get version from config
-version = snakemake.config.get("string", {}).get("version_tag", "v12.0")
+print(f"Filtering local links file: {links_path}")
+# Note: For very large files, pd.read_csv(chunksize=...) is better.
+# For 9606, it's ~600MB, which fits in memory on most systems.
+links_df = pd.read_csv(links_path, sep=" ")
 
-# Handle empty responses
-if df.empty:
-    print("Warning: No interactions found for the given genes at this threshold.")
+# Filter by score
+links_df = links_df[links_df["combined_score"] >= min_score]
+
+# Filter for our seed genes
+# Option A: Both must be in seeds (strictly local network)
+# Option B: One must be in seeds (seeds + neighbors)
+# The original script used the STRING API 'network' endpoint which returns interactions among the input genes.
+mask = links_df["protein1"].isin(string_ids) & links_df["protein2"].isin(string_ids)
+filtered_links = links_df[mask].copy()
+
+# 4. Format and Save
+version = snakemake.config["string"]["version_tag"]
+
+if filtered_links.empty:
+    print("Warning: No interactions found for the given genes at this threshold in local DB.")
     output_df = pd.DataFrame(columns=["nodeA", "nodeB", "weight", "source", "evidence", "version"])
 else:
-    output_df = df[["preferredName_A", "preferredName_B", "score"]].copy()
-    output_df.columns = ["nodeA", "nodeB", "weight"]
-
-    # STRING TSV format returns scores as 0-1000, normalize to 0-1 for consistency
-    # Check if scores are already in 0-1 range (max <= 1.0)
-    if output_df["weight"].max() > 1.0:
-        output_df["weight"] = output_df["weight"] / 1000.0
-
-    # Add metadata columns per framework schema
-    output_df["source"] = "STRING"
+    # Map back to symbols
+    filtered_links["nodeA"] = filtered_links["protein1"].map(id_to_symbol)
+    filtered_links["nodeB"] = filtered_links["protein2"].map(id_to_symbol)
+    filtered_links["weight"] = filtered_links["combined_score"] / 1000.0
+    
+    output_df = filtered_links[["nodeA", "nodeB", "weight"]].copy()
+    output_df["source"] = "STRING_Local"
     output_df["evidence"] = "combined_score"
     output_df["version"] = version
 
-    # Remove duplicates and self-loops [cite: 311, 312]
+    # Remove duplicates and self-loops
     output_df = output_df[output_df["nodeA"] != output_df["nodeB"]]
     output_df = output_df.drop_duplicates()
 
-# 5. Save Output to the path defined in Snakefile
 os.makedirs(os.path.dirname(snakemake.output[0]), exist_ok=True)
 output_df.to_csv(snakemake.output[0], sep="\t", index=False)
-print(f"Network backbone saved with {len(output_df)} edges.")
+print(f"Local network backbone saved with {len(output_df)} edges.")
