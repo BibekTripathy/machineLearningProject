@@ -10,18 +10,18 @@
         <h1>🔬 Cancer Network Analysis Report</h1>
         <p class="info-box">
             <strong>Purpose:</strong> ML training data generation for cancer gene stratification<br>
-            <strong>Generated:</strong> 2026-02-16 22:22:42<br>
+            <strong>Generated:</strong> 2026-02-18 20:47:28<br>
             <strong>Framework:</strong> Network propagation + community detection (Leiden)
         </p>
 
         <h2>📊 Executive Summary</h2>
         <table>
             <tr><th>Metric</th><th>Value</th></tr>
-            <tr><td>Total Genes in Modules</td><td class="metric">37</td></tr>
+            <tr><td>Total Genes in Modules</td><td class="metric">39</td></tr>
             <tr><td>Identified Modules</td><td class="metric">2</td></tr>
-            <tr><td>Disease PPI Edges</td><td class="metric">237</td></tr>
-            <tr><td>Avg Edge Score</td><td class="metric">0.864</td></tr>
-            <tr><td>Edge Score Range</td><td>0.702 - 0.999</td></tr>
+            <tr><td>Disease PPI Edges</td><td class="metric">113</td></tr>
+            <tr><td>Avg Edge Score</td><td class="metric">0.597</td></tr>
+            <tr><td>Edge Score Range</td><td>0.350 - 1.000</td></tr>
         </table>
 
         <h2>📈 ML Feature Summary</h2>
@@ -46,15 +46,15 @@
   <tbody>
     <tr>
       <td>leiden_0</td>
-      <td>19</td>
-      <td>0.5497</td>
-      <td>Binary feature: gene in leiden_0 (size=19, density=0.5497)</td>
+      <td>20</td>
+      <td>0.5737</td>
+      <td>Binary feature: gene in leiden_0 (size=20, density=0.5737)</td>
     </tr>
     <tr>
       <td>leiden_1</td>
-      <td>18</td>
-      <td>0.4771</td>
-      <td>Binary feature: gene in leiden_1 (size=18, density=0.4771)</td>
+      <td>19</td>
+      <td>0.5029</td>
+      <td>Binary feature: gene in leiden_1 (size=19, density=0.5029)</td>
     </tr>
   </tbody>
 </table>
@@ -76,15 +76,15 @@
   <tbody>
     <tr>
       <td>leiden_0</td>
-      <td>19</td>
-      <td>0.5497</td>
+      <td>20</td>
+      <td>0.5737</td>
       <td>ARID1A, ATM, BRCA1, BRCA2, CCND1, CDK4, CDKN2A, CHEK2...</td>
     </tr>
     <tr>
       <td>leiden_1</td>
-      <td>18</td>
-      <td>0.4771</td>
-      <td>ALK, BRAF, EGFR, ERBB2, GNAS, IDH1, IDH2, KRAS...</td>
+      <td>19</td>
+      <td>0.5029</td>
+      <td>ALK, BRAF, EGFR, ERBB2, GNAS, HRAS, IDH1, IDH2...</td>
     </tr>
   </tbody>
 </table>
@@ -104,15 +104,15 @@
   <tbody>
     <tr>
       <td>Adjusted Rand Index (ARI)</td>
-      <td>1.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <td>Normalized Mutual Information (NMI)</td>
-      <td>1.0</td>
+      <td>0.0</td>
     </tr>
     <tr>
       <td>Average Jaccard Similarity</td>
-      <td>0.5</td>
+      <td>0.0</td>
     </tr>
   </tbody>
 </table>
@@ -136,19 +136,25 @@
       <td>leiden_0</td>
       <td>GO:BP</td>
       <td>mitotic cell cycle process</td>
-      <td>8.76e-03</td>
+      <td>2.63e-03</td>
     </tr>
     <tr>
       <td>leiden_0</td>
       <td>GO:BP</td>
       <td>cell cycle process</td>
-      <td>9.20e-03</td>
+      <td>2.76e-03</td>
+    </tr>
+    <tr>
+      <td>leiden_0</td>
+      <td>GO:BP</td>
+      <td>mitotic cell cycle</td>
+      <td>2.38e-02</td>
     </tr>
     <tr>
       <td>leiden_0</td>
       <td>GO:CC</td>
       <td>nucleoplasm</td>
-      <td>2.51e-02</td>
+      <td>3.85e-02</td>
     </tr>
   </tbody>
 </table>
